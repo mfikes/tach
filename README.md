@@ -1,6 +1,6 @@
 # Tach
 
-Leiningen plugin for testing libs targeting self-hosted ClojureScript.
+Leiningen plugin for testing libs targeting self-hosted ClojureScript, using either [Lumo](https://github.com/anmonteiro/lumo) or [Planck](http://planck-repl.org).
 
 # Usage
 
@@ -35,6 +35,24 @@ In order to enable verbose logging, include config like the following in `projec
 
 ```
 {:tach {:debug? true}}
+```
+
+# Example
+
+Here is Tach using Lumo to run [Andare](https://github.com/mfikes/andare)'s unit tests (the only change needed was to add the Tach plugin to Andare's `project.clj`):
+
+```
+$ lein tach lumo
+
+Testing cljs.core.async.pipeline-test
+nil
+
+Testing cljs.core.async.buffer-tests
+
+Testing cljs.core.async.tests
+
+Ran 42 tests containing 132 assertions.
+0 failures, 0 errors.
 ```
 
 # License
