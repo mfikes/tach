@@ -2,6 +2,7 @@
   (:require
     [clojure.string :as string]
     [clojure.java.shell :as shell]
+    [leiningen.core.main :as main]
     [leiningen.core.classpath :as classpath]))
 
 (defn clojurescript-jar?
@@ -72,4 +73,5 @@
         (println (:out result))
         (do
           (apply println "Failed to execute:" command-line)
-          (prn result))))))
+          (prn result)
+          (main/exit (:exit result)))))))
