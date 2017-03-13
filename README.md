@@ -28,7 +28,7 @@ The `:cljsbuild` build is used to extract:
 You can override the main test runner namespace by including configuration like the following in your `project.clj`:
 
 ```
-{:tach {:test-runner-namespace 'my.test-runner}}
+{:tach {:test-runner-ns 'my.test-runner}}
 ```
 
 In order to enable verbose logging, include config like the following in `project.clj`:
