@@ -77,6 +77,10 @@
   [project]
   (get-in project [:tach :force-non-zero-exit-on-test-failure?]))
 
+(defn tach-cache?
+  [project]
+  (get-in project [:tach :cache?]))
+
 (defn exit
   [code message]
   (println message)
@@ -96,6 +100,10 @@
                          [execution-environment
                           "-q"
                           "-c" (-> project filtered-classpath (concat (:source-paths build)) render-classpath)]
+                         (when (tach-cache? project)
+                           (if-let [cache-path (get-in project [:tach :cache-path])]
+                             ["--cache" cache-path]
+                             ["--auto-cache"]))
                          (when (tach-force-non-zero-exit-on-test-failure? project)
                            ["-e" (render-require-planck-core planck?)
                             "-e" (render-require-cljs-test)
