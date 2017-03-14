@@ -43,6 +43,14 @@ In order to force non-zero exit code on test failure, include config like the fo
 {:tach {:force-non-zero-exit-on-test-failure? true}}
 ```
 
+In order to enable compilation caching, include config like the following in `project.clj`:
+
+```
+{:tach {:cache? true
+        ; optionally, you can specify an existing directory into which Lumo/Planck can write
+        :cache-path "custom_path_to_cache"}}
+```
+
 # Example
 
 Here is Tach using Lumo to run [Andare](https://github.com/mfikes/andare)'s unit tests (the only change needed was to add the Tach plugin to Andare's `project.clj`):
