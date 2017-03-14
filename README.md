@@ -8,7 +8,7 @@ Add `lein-tach` to your Leiningen `:plugins` vector.
 
 [![Clojars Project](https://img.shields.io/clojars/v/lein-tach.svg)](https://clojars.org/lein-tach)
 
-Run via 
+Run via
 
 ```
 lein tach {self-host-env}
@@ -18,7 +18,7 @@ lein tach {self-host-env} {build-id}
 
 The `self-host-env` can be either `lumo` or `planck`.
 
-If specified, `{build-id}` is used to identify the `:cljsbuild` build. (Otherwise the first is used.) 
+If specified, `{build-id}` is used to identify the `:cljsbuild` build. (Otherwise the first is used.)
 
 The `:cljsbuild` build is used to extract:
 
@@ -35,6 +35,12 @@ In order to enable verbose logging, include config like the following in `projec
 
 ```
 {:tach {:debug? true}}
+```
+
+In order to force non-zero exit code on test failure, include config like the following in `project.clj`:
+
+```
+{:tach {:force-non-zero-exit-on-test-failure? true}}
 ```
 
 # Example
