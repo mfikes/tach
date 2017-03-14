@@ -38,11 +38,12 @@
 
 (defn render-inject-exit-handler
   [planck?]
-  (pr-str `(defmethod cljs.test/report [:cljs.test/default :end-run-tests] [~'m]
-             (when-not (cljs.test/successful? ~'m)
-               ~(if planck?
-                  `(planck.core/exit ~exit-code-failed-test)
-                  `(.exit js/process ~exit-code-failed-test))))))
+  (pr-str `(do (defmethod cljs.test/report [:cljs.test/default :end-run-tests] [~'m]
+                 (when-not (cljs.test/successful? ~'m)
+                   ~(if planck?
+                      `(planck.core/exit ~exit-code-failed-test)
+                      `(.exit js/process ~exit-code-failed-test))))
+               nil)))
 
 (defn get-build
   [project args]
