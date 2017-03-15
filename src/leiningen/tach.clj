@@ -109,8 +109,8 @@
                             "-e" (render-require-cljs-test)
                             "-e" (render-inject-exit-handler planck?)])
                          ["-e" (render-require-test-runner-main test-runner-ns)])
-    _ (when (tach-debug? project)
-        (apply println "Running\n" command-line))
-    result (apply shell/sh command-line)]
-(exit (:exit result)
-      (str (:out result) (:err result))))))
+          _ (when (tach-debug? project)
+              (apply println "Running\n" command-line))
+          result (apply shell/sh command-line)]
+      (exit (:exit result)
+        (str (:out result) (:err result))))))
