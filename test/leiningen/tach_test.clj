@@ -83,7 +83,7 @@
   (is (= 'foo (tach/unquoted 'foo)))
   (is (= 'foo (tach/unquoted ''foo))))
 
-(deftest get-test-runner-ns
+(deftest get-test-runner-ns-test
   (let [project1
         '{:cljsbuild
           {:builds
@@ -117,6 +117,41 @@
            (tach/get-test-runner-ns project1 build)))
     (is (= 'foo.core
            (tach/get-test-runner-ns project2 build)))))
+
+(deftest get-source-paths-test
+  (let [project1
+        '{:cljsbuild
+          {:builds
+           [{:id "dev"
+             :source-paths ["src/test/cljs" "src/main/clojure/cljs"]
+             :compiler {:main cljs.core.async.test-runner
+                        :asset-path "../out"
+                        :optimizations :none
+                        :output-to "tests.js"
+                        :output-dir "out"}}]}}
+        project2
+        '{:cljsbuild
+          {:builds
+           [{:id "dev"
+             :source-paths ["src/test/cljs" "src/main/clojure/cljs"]
+             :compiler {:main cljs.core.async.test-runner
+                        :asset-path "../out"
+                        :optimizations :none
+                        :output-to "tests.js"
+                        :output-dir "out"}}]}
+          :tach {:source-paths ["abc/def" "foo/bar"]}}
+        build
+        '{:id "dev"
+          :source-paths ["src/test/cljs" "src/main/clojure/cljs"]
+          :compiler {:main cljs.core.async.test-runner
+                     :asset-path "../out"
+                     :optimizations :none
+                     :output-to "tests.js"
+                     :output-dir "out"}}]
+    (is (= ["src/test/cljs" "src/main/clojure/cljs"]
+           (tach/get-source-paths project1 build)))
+    (is (= ["abc/def" "foo/bar"]
+           (tach/get-source-paths project2 build)))))
 
 (deftest tach-debug?-test
   (is (tach/tach-debug? {:tach {:debug? true}}))

@@ -49,14 +49,15 @@ lein tach lumo dev
 You can explicitly set any of the Tach configuration values by including configuration like the following in your `project.clj` (all of the keys are optional):
 
 ```
-{:tach {:test-runner-ns 'my-lib.test-runner
-        :force-non-zero-exit-on-test-failure? true
-        :cache? true
-        :cache-path "/custom/path/to/cache_dir"
-        :debug? true}}
+:tach {:test-runner-ns 'my-lib.test-runner
+       :source-paths ["src/cljs" "src/cljc"]
+       :force-non-zero-exit-on-test-failure? true
+       :cache? true
+       :cache-path "/custom/path/to/cache_dir"
+       :debug? true}
 ```
 
-If `:test-runner-ns` is specified, it overrides any value derived from `:cljsbuild`.
+If either `:test-runner-ns` or `:source-paths`is specified, it overrides any value derived from `:cljsbuild`.
 
 The `:force-non-zero-exit-on-test-failure?` flag can be useful for CI builds: If set to `true`, it causes code like the following to be evaluated, which causes Lumo or Planck to exit with a non-zero code upon test failures:
 

@@ -69,6 +69,11 @@
   (unquoted (or (get-in project [:tach :test-runner-ns])
                 (get-in build [:compiler :main]))))
 
+(defn get-source-paths
+  [project build]
+  (or (get-in project [:tach :source-paths])
+      (get-in build [:source-paths])))
+
 (defn tach-debug?
   [project]
   (get-in project [:tach :debug?]))
@@ -91,7 +96,8 @@
   (let [build (get-build project args)
         _ (when (tach-debug? project)
             (println "Using this build: " (pr-str build)))
-        test-runner-ns (get-test-runner-ns project build)]
+        test-runner-ns (get-test-runner-ns project build)
+        source-paths (get-source-paths project build)]
     (when-not test-runner-ns
       (throw (ex-info "Failed to determine test runner namespace" {})))
     (let [execution-environment (get-execution-environment args)
@@ -99,7 +105,7 @@
           command-line (concat
                          [execution-environment
                           "-q"
-                          "-c" (-> project filtered-classpath (concat (:source-paths build)) render-classpath)]
+                          "-c" (-> project filtered-classpath (concat source-paths) render-classpath)]
                          (when (tach-cache? project)
                            (if-let [cache-path (get-in project [:tach :cache-path])]
                              ["--cache" cache-path]
