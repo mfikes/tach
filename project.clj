@@ -1,4 +1,4 @@
-(defproject lein-tach "0.1.0"
+(defproject lein-tach "0.2.0"
   :description "Test libs targeting self-hosted ClojureScript."
   :url "https://github.com/mfikes/tach"
   :license {:name "Eclipse Public License"
