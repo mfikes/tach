@@ -4,11 +4,11 @@ Leiningen plugin for testing libraries targeting self-hosted ClojureScript.
 
 ## Usage
 
-Add `lein-tach` to your Leiningen `:plugins` vector
+Add `lein-tach` to your Leiningen `:plugins` vector.
 
 [![Clojars Project](https://img.shields.io/clojars/v/lein-tach.svg)](https://clojars.org/lein-tach)
 
-and then
+Then
 
 ```
 lein tach lumo
@@ -20,7 +20,7 @@ or
 lein tach planck
 ```
 
-This will cause Tach to executing your unit tests in [Lumo](https://github.com/anmonteiro/lumo) or [Planck](http://planck-repl.org).
+will cause Tach to execute your unit tests in [Lumo](https://github.com/anmonteiro/lumo) or [Planck](http://planck-repl.org).
 
 ## Example
 
