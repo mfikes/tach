@@ -24,26 +24,30 @@
       (throw (ex-info "Execution enviromnents supported: lumo or planck" {:execution-environemnt execution-environment})))
     execution-environment))
 
-(defn render-require-test-runner-main
+(defn make-require-test-runner-main-snippet
   [test-runner-main]
-  (pr-str `(require '~test-runner-main)))
+  `(require '~test-runner-main))
 
-(defn render-require-cljs-test
+(defn make-require-cljs-test-snippet
   []
-  (pr-str `(require 'cljs.test)))
+  `(require 'cljs.test))
 
-(defn render-require-planck-core
+(defn make-require-planck-core-snippet
   [planck?]
-  (pr-str (when planck? `(require 'planck.core))))
+  (when planck? `(require 'planck.core)))
 
-(defn render-inject-exit-handler
+(defn make-inject-exit-handler-snippet
   [planck?]
-  (pr-str `(do (defmethod cljs.test/report [:cljs.test/default :end-run-tests] [~'m]
-                 (when-not (cljs.test/successful? ~'m)
-                   ~(if planck?
-                      `(planck.core/exit ~exit-code-failed-test)
-                      `(.exit js/process ~exit-code-failed-test))))
-               nil)))
+  `(do (defmethod cljs.test/report [:cljs.test/default :end-run-tests] [~'m]
+         (when-not (cljs.test/successful? ~'m)
+           ~(if planck?
+              `(planck.core/exit ~exit-code-failed-test)
+              `(.exit js/process ~exit-code-failed-test))))
+       nil))
+
+(defn render-forms-lists
+  [& forms-lists]
+  (string/join " " (filter some? (apply concat forms-lists))))
 
 (defn get-build
   [project args]
@@ -110,11 +114,12 @@
                            (if-let [cache-path (get-in project [:tach :cache-path])]
                              ["--cache" cache-path]
                              ["--auto-cache"]))
-                         (when (tach-force-non-zero-exit-on-test-failure? project)
-                           ["-e" (render-require-planck-core planck?)
-                            "-e" (render-require-cljs-test)
-                            "-e" (render-inject-exit-handler planck?)])
-                         ["-e" (render-require-test-runner-main test-runner-ns)])
+                         ["-e" (render-forms-lists
+                                 (when (tach-force-non-zero-exit-on-test-failure? project)
+                                   [(make-require-planck-core-snippet planck?)
+                                    (make-require-cljs-test-snippet)
+                                    (make-inject-exit-handler-snippet planck?)])
+                                 [(make-require-test-runner-main-snippet test-runner-ns)])])
           _ (when (tach-debug? project)
               (apply println "Running\n" command-line))
           result (apply shell/sh command-line)]
