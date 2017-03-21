@@ -89,7 +89,8 @@
 (defn exit
   [code message]
   (println message)
-  (main/exit code))
+  (if-not (zero? code)
+    (main/exit code)))
 
 (defn tach
   [project & args]
