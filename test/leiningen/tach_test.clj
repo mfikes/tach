@@ -23,25 +23,29 @@
   (is (= "planck" (tach/get-execution-environment ["planck"])))
   (is (= "planck" (tach/get-execution-environment ["planck" "dev"]))))
 
-(deftest render-require-test-runner-main-test
-  (is (= "(clojure.core/require (quote foo.core))"
-         (tach/render-require-test-runner-main 'foo.core))))
+(deftest make-require-test-runner-main-snippet-test
+  (is (= '(clojure.core/require (quote foo.core))
+         (tach/make-require-test-runner-main-snippet 'foo.core))))
 
-(deftest render-require-cljs-test
-  (is (= "(clojure.core/require (quote cljs.test))"
-         (tach/render-require-cljs-test))))
+(deftest make-require-cljs-test-snippet-test
+  (is (= '(clojure.core/require (quote cljs.test))
+         (tach/make-require-cljs-test-snippet))))
 
-(deftest render-require-planck-core-test
-  (is (= "(clojure.core/require (quote planck.core))"
-         (tach/render-require-planck-core true)))
-  (is (= "nil"
-         (tach/render-require-planck-core false))))
+(deftest make-require-planck-core-snippet-test
+  (is (= '(clojure.core/require (quote planck.core))
+         (tach/make-require-planck-core-snippet true)))
+  (is (= nil
+         (tach/make-require-planck-core-snippet false))))
 
-(deftest render-inject-exit-handler-test
-  (is (= "(do (clojure.core/defmethod cljs.test/report [:cljs.test/default :end-run-tests] [m] (clojure.core/when-not (cljs.test/successful? m) (planck.core/exit 1))) nil)"
-         (tach/render-inject-exit-handler true)))
-  (is (= "(do (clojure.core/defmethod cljs.test/report [:cljs.test/default :end-run-tests] [m] (clojure.core/when-not (cljs.test/successful? m) (.exit js/process 1))) nil)"
-         (tach/render-inject-exit-handler false))))
+(deftest make-inject-exit-handler-snippet-test
+  (is (= '(do (clojure.core/defmethod cljs.test/report [:cljs.test/default :end-run-tests] [m] (clojure.core/when-not (cljs.test/successful? m) (planck.core/exit 1))) nil)
+         (tach/make-inject-exit-handler-snippet true)))
+  (is (= '(do (clojure.core/defmethod cljs.test/report [:cljs.test/default :end-run-tests] [m] (clojure.core/when-not (cljs.test/successful? m) (.exit js/process 1))) nil)
+         (tach/make-inject-exit-handler-snippet false))))
+
+(deftest render-forms-lists-test
+  (is (= "(do 1 2 3) (str :x) :y (let [a 1 b 2] (x a b))"
+         (tach/render-forms-lists nil ['(do 1 2 3) '(str :x)] nil nil [:y] nil ['(let [a 1 b 2] (x a b))] nil))))
 
 (deftest get-build-test
   (let [project
