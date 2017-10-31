@@ -49,9 +49,13 @@
   [project args]
   (let [builds (get-in project [:cljsbuild :builds])]
     (if-some [build-id (second args)]
-      (first (filter (fn [build]
-                       (= (:id build) build-id))
-                     builds))
+      (or (first (filter (fn [build]
+                           (= (:id build) build-id))
+                         builds))
+          (->> builds
+               (filter (fn [[id _]] (= (name id) build-id)))
+               first
+               second))
       (first builds))))
 
 (defn filtered-classpath
