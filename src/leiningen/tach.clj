@@ -11,6 +11,10 @@
   [jar-name]
   (boolean (re-matches #".*/clojurescript-.*\.jar" jar-name)))
 
+(defn clojure-jar?
+  [jar-name]
+  (boolean (re-matches #".*/clojure-.*\.jar" jar-name)))
+
 (defn render-classpath
   [cp]
   (str (string/join ":" cp)))
@@ -60,7 +64,9 @@
 
 (defn filtered-classpath
   [project]
-  (remove clojurescript-jar? (classpath/get-classpath project)))
+  (->> (classpath/get-classpath project)
+    (remove clojurescript-jar?)
+    (remove clojure-jar?)))
 
 (defn unquoted
   [sym]
