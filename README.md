@@ -62,8 +62,8 @@ If either `:test-runner-ns` or `:source-paths`is specified, it overrides any val
 The `:force-non-zero-exit-on-test-failure?` flag can be useful for CI builds: If set to `true`, it causes code like the following to be evaluated, which causes Lumo or Planck to exit with a non-zero code upon test failures:
 
 ```clojure
-(defmethod cljs.test/report [:cljs.test/default :end-run-tests] [~'m]
-  (when-not (cljs.test/successful? ~'m)
+(defmethod cljs.test/report [:cljs.test/default :end-run-tests] [m]
+  (when-not (cljs.test/successful? m)
     (self-host-env-specific-exit 1)))
 ```
 
