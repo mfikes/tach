@@ -164,3 +164,11 @@
 (deftest tach-cache?-test
   (is (tach/tach-cache? {:tach {:cache? true}}))
   (is (not (tach/tach-cache? {:tach {}}))))
+
+(deftest tach-verbose?-test
+  (let [tach-verbose {:tach {:verbose? true :test-runner-ns 'com.some.ns}}
+        tach-not-verbose {:tach {}}
+        execution-env "planck"]
+  (is (tach/tach-verbose? tach-verbose))
+  (is (not (tach/tach-verbose? tach-not-verbose)))
+  (is (= [execution-env "-v"] (take 2 (tach/build-command-line tach-verbose [execution-env]))))))
