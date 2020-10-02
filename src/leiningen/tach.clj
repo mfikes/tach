@@ -96,14 +96,18 @@
   [project]
   (get-in project [:tach :cache?]))
 
+(defn tach-verbose?
+  [project]
+  (get-in project [:tach :verbose?]))
+
 (defn exit
   [code message]
   (println message)
   (if-not (zero? code)
     (main/exit code)))
 
-(defn tach
-  [project & args]
+(defn build-command-line
+  [project args]
   (let [build (get-build project args)
         _ (when (tach-debug? project)
             (println "Using this build: " (pr-str build)))
@@ -115,6 +119,8 @@
           planck? (= execution-environment "planck")
           command-line (concat
                          [execution-environment
+                          (when (and (tach-verbose? project) planck?)
+                            "-v")
                           "-q"
                           "-c" (-> project filtered-classpath (concat source-paths) render-classpath)]
                          (when (tach-cache? project)
@@ -125,9 +131,14 @@
                            ["-e" (render-require-planck-core planck?)
                             "-e" (render-require-cljs-test)
                             "-e" (render-inject-exit-handler planck?)])
-                         ["-e" (render-require-test-runner-main test-runner-ns)])
-          _ (when (tach-debug? project)
-              (apply println "Running\n" command-line))
-          result (apply shell/sh command-line)]
-      (exit (:exit result)
-        (str (:out result) (:err result))))))
+                         ["-e" (render-require-test-runner-main test-runner-ns)])]
+      command-line)))
+
+(defn tach
+  [project & args]
+  (let [command-line (build-command-line project args)
+        _ (when (tach-debug? project)
+            (apply println "Running\n" command-line))
+        result (apply shell/sh command-line)]
+  (exit (:exit result)
+    (str (:out result) (:err result)))))
