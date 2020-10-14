@@ -100,6 +100,10 @@
   [project]
   (get-in project [:tach :verbose?]))
 
+(defn tach-repl?
+  [project]
+  (get-in project [:tach :repl]))
+
 (defn exit
   [code message]
   (println message)
@@ -117,6 +121,7 @@
       (throw (ex-info "Failed to determine test runner namespace" {})))
     (let [execution-environment (get-execution-environment args)
           planck? (= execution-environment "planck")
+          run-tests (or (not planck?) (not (tach-repl? project)))
           command-line (concat
                          [execution-environment
                           (when (and (tach-verbose? project) planck?)
@@ -127,11 +132,12 @@
                            (if-let [cache-path (get-in project [:tach :cache-path])]
                              ["--cache" cache-path]
                              ["--auto-cache"]))
-                         (when (tach-force-non-zero-exit-on-test-failure? project)
-                           ["-e" (render-require-planck-core planck?)
-                            "-e" (render-require-cljs-test)
-                            "-e" (render-inject-exit-handler planck?)])
-                         ["-e" (render-require-test-runner-main test-runner-ns)])]
+                         (when run-tests
+                           (when (tach-force-non-zero-exit-on-test-failure? project)
+                               ["-e" (render-require-planck-core planck?)
+                                "-e" (render-require-cljs-test)
+                                "-e" (render-inject-exit-handler planck?)])
+                           ["-e" (render-require-test-runner-main test-runner-ns)]))]
       command-line)))
 
 (defn tach
