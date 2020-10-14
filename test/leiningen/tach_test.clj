@@ -172,3 +172,18 @@
   (is (tach/tach-verbose? tach-verbose))
   (is (not (tach/tach-verbose? tach-not-verbose)))
   (is (= [execution-env "-v"] (take 2 (tach/build-command-line tach-verbose [execution-env]))))))
+
+(deftest tach-repl?-test
+  (let [tach-repl {:tach {:repl true :test-runner-ns 'com.some.ns}}
+        tach-no-repl {:tach {:test-runner-ns 'com.some.ns}}
+        planck-env "planck"
+        lumo-env "lumo"
+        eval-arg "-e"]
+    (is (tach/tach-repl? tach-repl))
+    (is (not (tach/tach-repl? tach-no-repl)))
+    ; repl means we should not have the -e (evaluate) arg for planck
+    (is (nil? (some #{eval-arg} (tach/build-command-line tach-repl [planck-env]))))
+    ; no :repl means we should
+    (is (not (nil? (some #{eval-arg} (tach/build-command-line tach-no-repl [planck-env])))))
+    ; :repl option should be ignored for lumo env
+    (is (not (nil? (some #{eval-arg} (tach/build-command-line tach-repl [lumo-env])))))))
