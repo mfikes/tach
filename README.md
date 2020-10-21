@@ -73,6 +73,6 @@ You can enable Tach diagnostic debug output by setting `:debug? true`.
 
 ## License
 
-Copyright © 2017–2018 Mike Fikes and Contributors
+Copyright © 2017–2020 Mike Fikes and Contributors
 
 Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
